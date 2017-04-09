@@ -1,0 +1,9 @@
+############################################################################
+########## Managed by ansible (role: dns-resolver), do not edit! ###########
+############################################################################
+
+# Used for systemd socket activation (disabled atm)
+KRESD_ARGS="--config=/etc/knot-resolver/kresd.conf --forks=1 --keyfile=/usr/share/dns/root.key /run/knot-resolver/cache"
+
+# Standalone daemon arguments
+DAEMON_ARGS="--addr=127.0.0.1#53 --addr=::1#53 --config=/etc/knot-resolver/kresd.conf --forks={{ ansible_processor_cores }} --keyfile=/etc/knot-resolver/keys/dnssec.key /run/knot-resolver/cache"

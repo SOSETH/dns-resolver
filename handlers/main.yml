@@ -1,0 +1,9 @@
+---
+  - name: restart kresd
+    become: True
+    service: name=kresd state=restarted enabled=yes
+    
+  - name: reload systemd
+    become: True
+    command: systemctl daemon-reload
+    notify: restart kresd

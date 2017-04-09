@@ -1,0 +1,96 @@
+---
+  - name: Add NIC.CZ repo key
+    become: True
+    apt_key:
+      url: https://packages.sury.org/knot-resolver/apt.gpg
+      state: present
+    when: ansible_distribution == 'Debian'
+
+  - name: Install apt https transport
+    become: True
+    apt: name={{ item }} state=present
+    with_items:
+      - apt-transport-https
+
+  - name: Add kresd repos
+    become: True
+    apt_repository:
+      repo: "deb {{ item }} {{ ansible_distribution_release }} main"
+      state: present
+    with_items:
+      - "https://deb.knot-dns.cz/knot/"
+      - "https://deb.knot-dns.cz/knot-resolver/"
+    register: repochanged
+    when: ansible_distribution == 'Debian'
+
+  - name: Add kresd repos
+    become: True
+    apt_repository:
+      repo: "{{ item }}"
+      state: present
+    with_items:
+      - 'ppa:cz.nic-labs/knot-dns'
+      - 'ppa:cz.nic-labs/knot-resolver'
+    register: repochanged2
+    when: ansible_distribution == 'Ubuntu'
+
+  - name: Refresh apt cache
+    when: repochanged.results[0].changed or repochanged2.results[0].changed
+    become: True
+    apt: update_cache=yes
+
+  - name: Install dns resolver software
+    become: True
+    apt: name={{ item }} state=present default_release="{{ ansible_distribution_release }}-backports"
+    with_items:
+      - knot-resolver
+      - knot-dnsutils
+    when: ansible_distribution == 'Debian'
+
+  - name: Install dns resolver software
+    become: True
+    apt: name={{ item }} state=present
+    with_items:
+      - knot-resolver
+      - knot-dnsutils
+    when: ansible_distribution == 'Ubuntu'
+    
+  - name: Configure kresd
+    become: True
+    template: src={{ item }}.j2 dest=/etc/knot-resolver/{{ item }} owner=root group=root mode=0644
+    with_items:
+      - kresd.conf
+    notify: restart kresd
+    
+  - name: Configure kresd startup settings
+    become: True
+    template: src={{ item }}.j2 dest=/etc/default/{{ item }} owner=root group=root mode=0644
+    with_items:
+      - kresd
+    notify: restart kresd
+    
+  - name: Disable kresd socket activation
+    become: True
+    command: systemctl mask kresd.socket
+    changed_when: False
+    
+  - name: Overwrite kresd startup script
+    become: True
+    template: src={{ item }}.j2 dest=/etc/systemd/system/{{ item }} owner=root group=root mode=0644
+    with_items:
+      - kresd.service
+    notify: reload systemd
+    
+  - name: Create kresd DNSSEC key directory
+    become: True
+    file:
+      path: /etc/knot-resolver/keys
+      state: directory
+      owner: knot-resolver
+      group: knot-resolver
+      mode: 0750
+      
+  - name: Overwrite resolv.conf
+    become: True
+    template: src=resolv.conf.j2 dest=/etc/resolv.conf owner=root group=root mode=0644
+    
