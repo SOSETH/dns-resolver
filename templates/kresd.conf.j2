@@ -2,8 +2,14 @@
 -- ########## Managed by ansible (role: dns-resolver), do not edit! ###########
 -- ############################################################################
 
+{% if kresd_local_only %}
 -- Do not bind to any port - systemd does this, this service never executes
 -- anything with root privileges
+{% else %}
+for name, addr_list in pairs(net.interfaces()) do
+        net.listen(addr_list)
+end
+{% endif %}
 
 -- DNSSEC is already enabled by /etc/default/kresd, so don't touch
 
@@ -14,4 +20,7 @@ user('knot-resolver', 'knot-resolver')
 cache.size = {{ kresd_cache_size }}*MB
 
 -- Load modules
-modules = { 'stats' }
+modules = {
+        'stats',
+        ['hints < rrcache'] = '/etc/knot-resolver/hints'
+}
