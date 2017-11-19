@@ -1,8 +1,8 @@
 # Size of the local DNS cache in MB
-kresd_cache_size: 4096
+unbound_cache_size: 4096
 
 # DNS search domain, used for /etc/resolv.conf
 search_domain: 'ethz.ch'
 
 # Localhost only?
-kresd_local_only: True
+unbound_local_only: True

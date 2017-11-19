@@ -1,7 +1,7 @@
 ---
-  - name: restart kresd
+  - name: restart unbound
     become: True
-    service: name=kresd state=restarted enabled=yes
+    service: name=unbound state=restarted enabled=yes
     
   - name: reload systemd
     become: True
