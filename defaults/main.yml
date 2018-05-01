@@ -2,7 +2,7 @@
 unbound_cache_size: 4096
 
 # DNS search domain, used for /etc/resolv.conf
-search_domain: 'ethz.ch'
+search_domain: 'sos.ethz.ch'
 
 # Localhost only?
 unbound_local_only: True
