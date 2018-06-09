@@ -1,0 +1,10 @@
+# Managed by ansible. Do not edit!
+{% if dns_unbound_local_only %}
+# Local only, no change needed
+{% else %}
+server:
+  interface: 0.0.0.0
+  interface: ::0
+  access-control: 0.0.0.0/0 allow
+  access-control: 2001::/0 allow
+{% endif %}

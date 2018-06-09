@@ -1,55 +1,7 @@
 ---
-  - name: Remove NIC.CZ repo key
-    become: True
-    apt_key:
-      url: https://packages.sury.org/knot-resolver/apt.gpg
-      id: AC0E47584A7A714D
-      state: absent
-    when: ansible_distribution == 'Debian'
-
-  - name: Install apt https transport
-    become: True
-    apt: name={{ item }} state=present
-    with_items:
-      - apt-transport-https
-
   - name: Remove resolvconf
     become: True
     apt: name=resolvconf state=absent
-
-  - name: Remove kresd repos
-    become: True
-    apt_repository:
-      repo: "deb {{ item }} {{ ansible_distribution_release }} main"
-      state: absent
-    with_items:
-      - "https://deb.knot-dns.cz/knot/"
-      - "https://deb.knot-dns.cz/knot-resolver/"
-    register: repochanged
-    when: ansible_distribution == 'Debian'
-
-  - name: Remove kresd repos
-    become: True
-    apt_repository:
-      repo: "{{ item }}"
-      state: absent
-    with_items:
-      - 'ppa:cz.nic-labs/knot-dns'
-      - 'ppa:cz.nic-labs/knot-resolver'
-    register: repochanged2
-    when: ansible_distribution == 'Ubuntu'
-
-  - name: Refresh apt cache
-    when: repochanged.results[0].changed or repochanged2.results[0].changed
-    become: True
-    apt: update_cache=yes
-
-  - name: Remove dns resolver software
-    become: True
-    apt: name={{ item }} state=absent
-    with_items:
-      - knot-resolver
-      - knot-dnsutils
 
   - name: Install dns resolver software
     become: True
@@ -58,18 +10,13 @@
       - unbound
       - unbound-anchor
 
-#  - name: Configure extra unbound optioms
-#    become: True
-#    template: src={{ item }}.j2 dest=/etc/unbound/unbound.conf.d/{{ item }} owner=root group=root mode=0644
-#    with_items:
-#      - unbound.conf
-#    notify: restart kresd
+  - name: Configure extra unbound optioms
+    become: True
+    template: src={{ item }}.j2 dest=/etc/unbound/unbound.conf.d/{{ item }} owner=root group=root mode=0644
+    with_items:
+      - unbound.conf
+    notify: restart unbound
 
   - name: Overwrite resolv.conf
     become: True
     template: src=resolv.conf.j2 dest=/etc/resolv.conf owner=root group=root mode=0644
-
-#  - name: Create kresd hints file
-#    become: True
-#    template: src=hints.j2 dest=/etc/knot-resolver/hints owner=root group=root mode=0644
-#    notify: restart kresd

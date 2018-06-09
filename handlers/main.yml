@@ -2,7 +2,7 @@
   - name: restart unbound
     become: True
     service: name=unbound state=restarted enabled=yes
-    
+
   - name: reload systemd
     become: True
     command: systemctl daemon-reload
