@@ -1,22 +1,35 @@
 ---
   - name: Remove resolvconf
     become: True
-    apt: name=resolvconf state=absent
+    apt:
+      name: resolvconf
+      state: absent
 
   - name: Install dns resolver software
     become: True
-    apt: name={{ item }} state=present
-    with_items:
-      - unbound
-      - unbound-anchor
+    apt:
+      name:
+        - unbound
+        - unbound-anchor
+      state: present
 
   - name: Configure extra unbound optioms
     become: True
-    template: src={{ item }}.j2 dest=/etc/unbound/unbound.conf.d/{{ item }} owner=root group=root mode=0644
+    template:
+      src: "{{ item }}.j2"
+      dest: "/etc/unbound/unbound.conf.d/{{ item }}"
+      owner: root
+      group: root
+      mode: 0644
     with_items:
       - unbound.conf
     notify: restart unbound
 
   - name: Overwrite resolv.conf
     become: True
-    template: src=resolv.conf.j2 dest=/etc/resolv.conf owner=root group=root mode=0644
+    template:
+      src: resolv.conf.j2
+      dest: /etc/resolv.conf
+      owner: root
+      group: root
+      mode: 0644
