@@ -1,8 +1,5 @@
-# DNS search domain, used for /etc/resolv.conf
-dns_search_domain: 'sos.ethz.ch'
-
 # Localhost only?
-dns_unbound_local_only: True
+dns_resolver_unbound_local_only: True
 
-# Fallback resolver for bootstrap
-dns_fallback_nameserver: 8.8.8.8
+# Add domain (useful on mail systems)?
+# dns_resolver_domain: ""

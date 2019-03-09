@@ -1,4 +1,10 @@
 ---
   - name: restart unbound
     become: True
-    service: name=unbound state=restarted enabled=yes
+    service:
+      name: "{{ item }}"
+      state: restarted
+      enabled: yes
+    with_items:
+      - unbound
+      - unbound-resolvconf

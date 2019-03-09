@@ -1,16 +1,11 @@
 ---
-  - name: Remove resolvconf
-    become: True
-    apt:
-      name: resolvconf
-      state: absent
-
   - name: Install dns resolver software
     become: True
     apt:
       name:
         - unbound
         - unbound-anchor
+        - resolvconf
       state: present
 
   - name: Configure extra unbound optioms
@@ -25,11 +20,29 @@
       - unbound.conf
     notify: restart unbound
 
-  - name: Overwrite resolv.conf
+  - name: Configure resolvconf
     become: True
     template:
-      src: resolv.conf.j2
-      dest: /etc/resolv.conf
+      src: resolvconf.j2
+      dest: /etc/default/resolvconf
       owner: root
       group: root
       mode: 0644
+    notify: restart unbound
+
+  - name: Configure resolv.conf head (include domain)
+    become: True
+    template:
+      src: head.j2
+      dest: /etc/resolvconf/resolv.conf.d/head
+      owner: root
+      group: root
+      mode: 0644
+    notify: restart unbound
+
+  - name: Ensure that resolv.conf is a symlink
+    become: True
+    file:
+      src: /etc/resolvconf/run/resolv.conf
+      dest: /etc/resolv.conf
+      state: link

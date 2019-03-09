@@ -1,9 +1,0 @@
-############################################################################
-########## Managed by ansible (role: dns-resolver), do not edit! ###########
-############################################################################
-
-domain {{ dns_search_domain }}
-search {{ dns_search_domain }}
-nameserver 127.0.0.1
-# Fallback if unbound needs to bootstrap keys
-nameserver {{ dns_fallback_nameserver }}
