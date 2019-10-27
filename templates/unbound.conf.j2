@@ -5,8 +5,19 @@ server:
   {% for iface in dns_resolver_ifaces %}
   interface: {{ iface }}
   {% endfor %}
-  access-control: 0.0.0.0/0 allow
-  access-control: 2001::/0 allow
+{% for item in dns_resolver_unbound_acl %}
+  access-control: {{ item }}
+{% endfor %}
+{% endif %}
+{% if dns_resolver_forward_zones != [] %}
+{% for item in dns_resolver_unbound_forward_zones %}
+forward-zone:
+  name: "{{ item.name }}"
+{% for item2 in item.resolvers %}
+  forward-addr: {{ item2 }}
+{% endfor %}
+  forward-no-cache: yes
+{% endfor %}
 {% endif %}
 
 {{ dns_resolver_additional_config }}

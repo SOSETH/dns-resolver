@@ -18,3 +18,10 @@ dns_resolver_knot_modules:
   - "'hints > iterate'"
   - "'stats'"
   - "'predict'"
+
+# Only active if local_only is set to false!
+dns_resolver_unbound_acl:
+  - 0.0.0.0/0 allow
+  - 2001::/0 allow
+
+dns_resolver_unbound_forward_zones: []
