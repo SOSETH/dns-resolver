@@ -1,0 +1,16 @@
+-- vim:syntax=lua:set ts=4 sw=4:
+-- Refer to manual: http://knot-resolver.readthedocs.org/en/stable/daemon.html#configuration
+
+-- Network interface configuration: see kresd.systemd(7)
+
+net.ipv6 = {{ dns_resolver_ipv6 | lower }}
+
+-- Load useful modules
+modules = {
+  {{ dns_resolver_knot_modules | join(',\n  ') }}
+}
+
+-- Cache size
+cache.size = {{ dns_resolver_cache_size }} * MB
+
+{{ dns_resolver_additional_config }}

@@ -1,48 +1,36 @@
 ---
-  - name: Install dns resolver software
-    become: True
-    apt:
-      name:
-        - unbound
-        - unbound-anchor
-        - resolvconf
-      state: present
+- include_tasks: "{{ dns_resolver_mode }}.yml"
 
-  - name: Configure extra unbound optioms
-    become: True
-    template:
-      src: "{{ item }}.j2"
-      dest: "/etc/unbound/unbound.conf.d/{{ item }}"
-      owner: root
-      group: root
-      mode: 0644
-    with_items:
-      - unbound.conf
-    notify: restart unbound
+- name: Install resolvconf
+  become: True
+  apt:
+    name:
+      - resolvconf
+    state: present
 
-  - name: Configure resolvconf
-    become: True
-    template:
-      src: resolvconf.j2
-      dest: /etc/default/resolvconf
-      owner: root
-      group: root
-      mode: 0644
-    notify: restart unbound
+- name: Configure resolvconf
+  become: True
+  template:
+    src: resolvconf.j2
+    dest: /etc/default/resolvconf
+    owner: root
+    group: root
+    mode: 0644
+  notify: "restart {{ dns_resolver_mode }}"
 
-  - name: Configure resolv.conf head (include domain)
-    become: True
-    template:
-      src: head.j2
-      dest: /etc/resolvconf/resolv.conf.d/head
-      owner: root
-      group: root
-      mode: 0644
-    notify: restart unbound
+- name: Configure resolv.conf head (include domain)
+  become: True
+  template:
+    src: head.j2
+    dest: /etc/resolvconf/resolv.conf.d/head
+    owner: root
+    group: root
+    mode: 0644
+  notify: "restart {{ dns_resolver_mode }}"
 
-  - name: Ensure that resolv.conf is a symlink
-    become: True
-    file:
-      src: /etc/resolvconf/run/resolv.conf
-      dest: /etc/resolv.conf
-      state: link
+- name: Ensure that resolv.conf is a symlink
+  become: True
+  file:
+    src: /etc/resolvconf/run/resolv.conf
+    dest: /etc/resolv.conf
+    state: link

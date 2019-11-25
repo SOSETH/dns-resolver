@@ -1,5 +1,16 @@
 # Localhost only?
 dns_resolver_unbound_local_only: True
 
+dns_resolver_ipv6: True
+
+dns_resolver_cache_size: 100 # in MB
+
 # Add domain (useful on mail systems)?
 # dns_resolver_domain: ""
+
+dns_resolver_knot_modules:
+  - "'hints > iterate'"
+  - "'stats'"
+  - "'predict'"
+
+dns_resolver_additional_config: ""

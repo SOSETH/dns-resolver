@@ -1,10 +1,19 @@
 ---
-  - name: restart unbound
-    become: True
-    service:
-      name: "{{ item }}"
-      state: restarted
-      enabled: yes
-    with_items:
-      - unbound
-      - unbound-resolvconf
+- name: restart unbound
+  become: True
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items:
+    - unbound
+    - unbound-resolvconf
+
+- name: restart knot
+  become: True
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items:
+    - kresd@1.service

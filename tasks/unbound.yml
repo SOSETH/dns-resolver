@@ -1,0 +1,20 @@
+---
+- name: Install unbound resolver
+  become: True
+  apt:
+    name:
+      - unbound
+      - unbound-anchor
+    state: present
+
+- name: Configure extra unbound optioms
+  become: True
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/unbound/unbound.conf.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - unbound.conf
+  notify: restart unbound

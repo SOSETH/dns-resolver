@@ -1,0 +1,19 @@
+---
+- name: Install knot resolver
+  become: True
+  apt:
+    name:
+      - knot-resolver
+    state: present
+
+- name: Configure kresd
+  become: True
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/knot-resolver/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - kresd.conf
+  notify: restart knot
