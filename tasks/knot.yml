@@ -1,4 +1,16 @@
 ---
+- name: add the knot-resolver repository key
+  become: True
+  apt_key:
+    url: "https://download.opensuse.org/repositories/home:CZ-NIC:knot-resolver-latest/Debian_10/Release.key"
+    state: present
+
+- name: add the knot-resolver repository
+  become: True
+  apt_repository:
+    repo: 'deb http://download.opensuse.org/repositories/home:/CZ-NIC:/knot-resolver-latest/Debian_10/ /'
+    state: present
+
 - name: Install knot resolver
   become: True
   apt:

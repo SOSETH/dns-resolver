@@ -1,16 +1,19 @@
--- vim:syntax=lua:set ts=4 sw=4:
--- Refer to manual: http://knot-resolver.readthedocs.org/en/stable/daemon.html#configuration
+-- Managed by ansible. Do not edit!
 
--- Network interface configuration: see kresd.systemd(7)
+{% for iface in dns_resolver_ifaces %}
+net.listen('{{ iface }}', 53, { kind = 'dns', freebind = true })
+{% endfor %}
 
+{% if dns_resolver_knot_webmgmt_iface %}
+net.listen('{{ dns_resolver_knot_webmgmt_iface }}', 8453, { kind = 'webmgmt', freebind = true })
+
+{% endif %}
 net.ipv6 = {{ dns_resolver_ipv6 | lower }}
 
--- Load useful modules
 modules = {
   {{ dns_resolver_knot_modules | join(',\n  ') }}
 }
 
--- Cache size
 cache.size = {{ dns_resolver_cache_size }} * MB
 
 {{ dns_resolver_additional_config }}
