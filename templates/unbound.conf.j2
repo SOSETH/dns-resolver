@@ -1,10 +1,12 @@
 # Managed by ansible. Do not edit!
-{% if dns_resolver_unbound_local_only %}
-# Local only, no change needed
-{% else %}
+
+{% if not dns_resolver_ifaces|length %}
 server:
-  interface: 0.0.0.0
-  interface: ::0
+  {% for iface in dns_resolver_ifaces %}
+  interface: {{ iface }}
+  {% endfor %}
   access-control: 0.0.0.0/0 allow
   access-control: 2001::/0 allow
 {% endif %}
+
+{{ dns_resolver_additional_config }}
