@@ -9,6 +9,7 @@
   become: True
   apt_repository:
     repo: 'deb http://download.opensuse.org/repositories/home:/CZ-NIC:/knot-resolver-latest/Debian_10/ /'
+    filename: 'knot-resolver-latest'
     state: present
 
 - name: Install knot resolver

@@ -8,12 +8,12 @@ net.listen('{{ iface }}', 53, { kind = 'dns', freebind = true })
 net.listen('{{ dns_resolver_knot_webmgmt_iface }}', 8453, { kind = 'webmgmt', freebind = true })
 
 {% endif %}
-net.ipv6 = {{ dns_resolver_ipv6 | lower }}
+net.ipv6 = {{ dns_resolver_knot_ipv6 | lower }}
 
 modules = {
   {{ dns_resolver_knot_modules | join(',\n  ') }}
 }
 
-cache.size = {{ dns_resolver_cache_size }} * MB
+cache.size = {{ dns_resolver_knot_cache_size }} * MB
 
 {{ dns_resolver_additional_config }}
