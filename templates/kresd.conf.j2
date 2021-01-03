@@ -11,7 +11,7 @@ net.listen('{{ dns_resolver_knot_webmgmt_iface }}', 8453, { kind = 'webmgmt', fr
 net.ipv6 = {{ dns_resolver_knot_ipv6 | lower }}
 
 modules = {
-  {{ dns_resolver_knot_modules | join(',\n  ') }}
+  '{{ dns_resolver_knot_modules | join("',\n  '") }}'
 }
 
 cache.size = {{ dns_resolver_knot_cache_size }} * MB

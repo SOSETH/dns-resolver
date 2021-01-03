@@ -19,6 +19,14 @@
       - knot-resolver
     state: present
 
+- name: Install knot http module
+  become: True
+  apt:
+    name:
+      - knot-resolver-module-http
+    state: present
+  when: '"http" in dns_resolver_knot_modules'
+
 - name: Configure kresd
   become: True
   template:

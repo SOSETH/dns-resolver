@@ -34,3 +34,4 @@
     src: /etc/resolvconf/run/resolv.conf
     dest: /etc/resolv.conf
     state: link
+  failed_when: False

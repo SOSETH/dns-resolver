@@ -15,9 +15,9 @@ dns_resolver_knot_ipv6: True
 dns_resolver_knot_cache_size: 100 # in MB
 
 dns_resolver_knot_modules:
-  - "'hints > iterate'"
-  - "'stats'"
-  - "'predict'"
+  - "hints > iterate"
+  - stats
+  - predict
 
 # Only active if local_only is set to false!
 dns_resolver_unbound_acl:
