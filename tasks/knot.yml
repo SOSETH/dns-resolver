@@ -1,40 +1,40 @@
 ---
-- name: add the knot-resolver repository key
-  become: True
-  apt_key:
+- name: Add the knot-resolver repository key
+  become: true
+  ansible.builtin.apt_key:
     url: "https://download.opensuse.org/repositories/home:CZ-NIC:knot-resolver-latest/Debian_11/Release.key"
     state: present
 
-- name: add the knot-resolver repository
-  become: True
-  apt_repository:
+- name: Add the knot-resolver repository
+  become: true
+  ansible.builtin.apt_repository:
     repo: 'deb http://download.opensuse.org/repositories/home:/CZ-NIC:/knot-resolver-latest/Debian_11/ /'
     filename: 'knot-resolver-latest'
     state: present
 
 - name: Install knot resolver
-  become: True
-  apt:
+  become: true
+  ansible.builtin.apt:
     name:
       - knot-resolver
     state: present
 
 - name: Install knot http module
-  become: True
-  apt:
+  become: true
+  ansible.builtin.apt:
     name:
       - knot-resolver-module-http
     state: present
   when: '"http" in dns_resolver_knot_modules'
 
 - name: Configure kresd
-  become: True
-  template:
+  become: true
+  ansible.builtin.template:
     src: "{{ item }}.j2"
     dest: "/etc/knot-resolver/{{ item }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   with_items:
     - kresd.conf
-  notify: restart knot
+  notify: Restart knot

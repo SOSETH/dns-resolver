@@ -1,19 +1,19 @@
 ---
-- name: restart unbound
-  become: True
-  service:
+- name: Restart unbound
+  become: true
+  ansible.builtin.service:
     name: "{{ item }}"
     state: restarted
-    enabled: yes
+    enabled: true
   with_items:
     - unbound
     - unbound-resolvconf
 
-- name: restart knot
-  become: True
-  service:
+- name: Restart knot
+  become: true
+  ansible.builtin.service:
     name: "{{ item }}"
     state: restarted
-    enabled: yes
+    enabled: true
   with_items:
     - kresd@1.service

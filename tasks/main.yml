@@ -1,37 +1,38 @@
 ---
-- include_tasks: "{{ dns_resolver_mode }}.yml"
+- name: "Include tasks for resolver {{ dns_resolver_mode }}"
+  ansible.builtin.include_tasks: "{{ dns_resolver_mode }}.yml"
 
 - name: Install resolvconf
-  become: True
-  apt:
+  become: true
+  ansible.builtin.apt:
     name:
       - resolvconf
     state: present
 
 - name: Configure resolvconf
-  become: True
-  template:
+  become: true
+  ansible.builtin.template:
     src: resolvconf.j2
     dest: /etc/default/resolvconf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: "restart {{ dns_resolver_mode }}"
 
 - name: Configure resolv.conf head (include domain)
-  become: True
-  template:
+  become: true
+  ansible.builtin.template:
     src: head.j2
     dest: /etc/resolvconf/resolv.conf.d/head
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: "restart {{ dns_resolver_mode }}"
 
 - name: Ensure that resolv.conf is a symlink
-  become: True
-  file:
+  become: true
+  ansible.builtin.file:
     src: /etc/resolvconf/run/resolv.conf
     dest: /etc/resolv.conf
     state: link
-  failed_when: False
+  failed_when: false

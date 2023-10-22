@@ -9,7 +9,7 @@ dns_resolver_additional_config: ""
 dns_resolver_knot_webmgmt_iface: ''
 
 # Use IPv6 to contact upstream name servers
-dns_resolver_knot_ipv6: True
+dns_resolver_knot_ipv6: true
 
 # Size of the on-disk cache
 dns_resolver_knot_cache_size: 100 # in MB
