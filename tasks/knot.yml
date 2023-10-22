@@ -2,13 +2,13 @@
 - name: Add the knot-resolver repository key
   become: true
   ansible.builtin.apt_key:
-    url: "https://download.opensuse.org/repositories/home:CZ-NIC:knot-resolver-latest/Debian_11/Release.key"
+    url: "https://download.opensuse.org/repositories/home:CZ-NIC:knot-resolver-latest/Debian_{{ ansible_distribution_major_version }}/Release.key"
     state: present
 
 - name: Add the knot-resolver repository
   become: true
   ansible.builtin.apt_repository:
-    repo: 'deb http://download.opensuse.org/repositories/home:/CZ-NIC:/knot-resolver-latest/Debian_11/ /'
+    repo: 'deb http://download.opensuse.org/repositories/home:/CZ-NIC:/knot-resolver-latest/Debian_{{ ansible_distribution_major_version }}/ /'
     filename: 'knot-resolver-latest'
     state: present
 
